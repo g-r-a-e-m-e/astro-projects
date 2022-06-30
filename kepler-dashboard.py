@@ -12,34 +12,31 @@ import astroquery
 import astropy
 import numpy as np
 import pandas as pd
-import seaborn as sns
+import plotly.express as px
 import streamlit as st
 
-"""
-The following set the base URL to the NASA exoplanet archive, set the query to
-run against the Planetary Systems table, and format the output as .csv to be 
-read in by pandas.
-"""
+# The following set the base URL to the NASA exoplanet archive, set the query to
+# run against the Planetary Systems table, and format the output as .csv to be 
+# read in by pandas.
+
 # NASA Exoplanet archive url
-base_url = 'https://exoplanetarchive.ipac.caltech.edu/TAP/sync?query='
+base_url = "https://exoplanetarchive.ipac.caltech.edu/TAP/sync?query="
 
 # Table query
-table_query = f"""SELECT+*+FROM+ps+WHERE+discoverymethod+LIKE+'%Transit%'+AND+disc_facility+LIKE+'%Kepler%'+AND+soltype+LIKE+'%Confirmed%'+AND+pl_radestr+IS+NOT+NULL+"""
+table_query = "SELECT+*+FROM+ps+WHERE+discoverymethod+LIKE+'%Transit%'+AND+disc_facility+LIKE+'%Kepler%'+AND+soltype+LIKE+'%Confirmed%'+AND+pl_radestr+IS+NOT+NULL+"
 
 # Specify output format
-out_format = f"""&format=csv"""
+out_format = "&format=csv"
 
 # Concatenate base_url, table_query, and out_format 
 import_url = base_url + table_query + out_format
 
 # Read in the data to a pandas DataFrame
-df = pd.read_csv(import_url)
+df = pd.read_csv(import_url, low_memory = False)
 
-
-"""
-The following functions create some columns which will allow us to categorize 
-the data
-"""
+# The following functions will create columns which will allow us to categorize 
+# the data in our dashboard. This will allow the user to "slice and dice" the
+# data in order to explore it.
 
 # Simple stellar classification function
 def get_spectral_type(temperature):
@@ -88,9 +85,27 @@ def set_color(spectral_class):
     
     return clr
 
-
 # Get the spectral class
 df['spectral_class'] = df['st_teff'].apply(lambda x: get_spectral_type(x))
 
 # Map the color of the host star
 df['color_map'] = df['spectral_class'].apply(lambda x: set_color(x))
+
+discovery_years = df['disc_year'].sort_values().unique()
+
+spectral_class = df['spectral_class'].unique()
+
+# The following begins to build the streamlit application
+
+st.sidebar.title('Kepler Exoplanets')
+year_in = st.sidebar.select_slider('Discovery Year', discovery_years)
+#spectral_class_in = st.sidebar.radio('Spectral Class', ['O', 'B', 'A', 'F', 'G', 'K', 'M', 'C'])
+
+fig_1 = px.scatter(data_frame = df.loc[df['disc_year'] <= year_in], 
+                   x = 'pl_bmasse', y = 'pl_rade',
+                   size = 'pl_rade',
+                   facet_row = 'spectral_class',
+                   log_x = True, log_y = True,
+                   height = 1200)
+
+st.plotly_chart(fig_1, height = 1200)
