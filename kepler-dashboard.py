@@ -47,8 +47,6 @@ for i in range(len(cols)):
         col_string += cols[i] + ','
     else:
         col_string += cols[i]
-    
-col_string
 
 # Specify output format
 out_format = "&format=csv"
