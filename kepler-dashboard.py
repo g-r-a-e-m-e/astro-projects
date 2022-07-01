@@ -8,9 +8,6 @@ Created on Thu Jun 30 12:19:15 2022
 """
 
 # Import necessary packages
-import astroquery
-import astropy
-import numpy as np
 import pandas as pd
 import altair as alt
 import streamlit as st
