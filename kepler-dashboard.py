@@ -122,7 +122,7 @@ for sc in spectral_classes:
 # The following begins to build the streamlit application
 
 # Set the sidebar title
-st.sidebar.title('Kepler Exoplanets')
+st.title('Kepler Exoplanets')
 
 # Get the list of discovery years for the year_in slider
 discovery_years = df['disc_year'].sort_values().unique()
