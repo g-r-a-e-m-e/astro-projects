@@ -137,25 +137,7 @@ st.metric(label = f'Exoplanets discovered between {min(discovery_years)} and {ye
 
 # Create figure 1, scatterplot of planetary radius vs. planetary mass, in
 # Earth radii and Earth masses
-fig_1 = alt.Chart(df[df['disc_year'] <= year_in]).mark_point().encode(
-    x = alt.X('pl_bmasse', 
-              axis = alt.Axis(title = 'Planetary Mass (Earth Masses)'), 
-              scale = alt.Scale(type = 'log')),
-    y = alt.Y('pl_rade', 
-              axis = alt.Axis(title = 'Planetary Radius (Earth Radii)'), 
-              scale = alt.Scale(type = 'log')),
-    #row = alt.Row('spectral_class', 
-    #              title = 'Host Star Spectral Class',
-    #              header = alt.Header(titleColor = 'white')),
-    color = alt.Color('spectral_class', 
-                      scale = alt.Scale(domain = list(color_dict.keys()), 
-                                        range = list(color_dict.values())),
-                      legend = alt.Legend(title = 'Host Star Spectral Class')),
-    size = alt.Size('pl_rade',
-                    legend = alt.Legend(title = 'Planetary Radius'))
-    )
-
-fig_2 = px.scatter(data_frame = df[df['disc_year'] <= year_in],
+fig_1 = px.scatter(data_frame = df[df['disc_year'] <= year_in],
                    x = 'pl_bmasse', y = 'pl_rade',
                    color = 'spectral_class', color_discrete_map = color_dict,
                    size = 'pl_rade',
@@ -165,13 +147,12 @@ fig_2 = px.scatter(data_frame = df[df['disc_year'] <= year_in],
                              'spectral_class' : 'Host Star Spectral Class'},
                    render_mode = 'webgl')
 
-fig_2.update_layout(plot_bgcolor = 'black')
-fig_2.update_xaxes(gridcolor = 'grey', griddash = 'dash', minor_griddash = 'dot')
-fig_2.update_yaxes(gridcolor = 'grey', griddash = 'dash', minor_griddash = 'dot')
+fig_1.update_layout(plot_bgcolor = 'black')
+fig_1.update_xaxes(gridcolor = 'grey', griddash = 'dash', minor_griddash = 'dot')
+fig_1.update_yaxes(gridcolor = 'grey', griddash = 'dash', minor_griddash = 'dot')
 
 c1 = st.container()
 
 with c1:
     st.write("Distribution of Planetary Radius vs. Planetary Mass")
-    st.altair_chart(fig_1, use_container_width = True)
-    st.plotly_chart(fig_2, use_container_width = True)
+    st.plotly_chart(fig_1, use_container_width = True)
