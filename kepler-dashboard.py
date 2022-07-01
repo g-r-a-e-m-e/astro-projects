@@ -146,7 +146,7 @@ fig_1 = px.scatter(data_frame = df[df['disc_year'] <= year_in],
                              'pl_rade' : 'Planetary Radius (Earth Radii)',
                              'spectral_class' : 'Host Star Spectral Class'},
                    category_orders = {'spectral_class' : ['A', 'F', 'G', 'K', 'M']},
-                   render_mode = 'webgl')
+                   render_mode = 'auto')
 
 fig_1.update_layout(plot_bgcolor = 'black',
                     legend_orientation = 'h',
