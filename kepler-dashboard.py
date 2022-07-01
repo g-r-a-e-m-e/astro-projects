@@ -159,4 +159,4 @@ c1 = st.container()
 
 with c1:
     st.write("Distribution of Planetary Radius vs. Planetary Mass")
-    st.plotly_chart(fig_1)
+    st.plotly_chart(fig_1, use_container_width = True)
