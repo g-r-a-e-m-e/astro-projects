@@ -145,9 +145,13 @@ fig_1 = px.scatter(data_frame = df[df['disc_year'] <= year_in],
                    labels = {'pl_bmasse' : 'Planetary Mass (Earth Masses)',
                              'pl_rade' : 'Planetary Radius (Earth Radii)',
                              'spectral_class' : 'Host Star Spectral Class'},
+                   category_orders = {'spectral_class' : ['A', 'F', 'G', 'K', 'M']},
                    render_mode = 'webgl')
 
-fig_1.update_layout(plot_bgcolor = 'black')
+fig_1.update_layout(plot_bgcolor = 'black',
+                    legend_orientation = 'h',
+                    legend_y = -.25,
+                    legend_itemclick = 'toggleothers')
 fig_1.update_xaxes(gridcolor = 'grey', griddash = 'dash', minor_griddash = 'dot')
 fig_1.update_yaxes(gridcolor = 'grey', griddash = 'dash', minor_griddash = 'dot')
 
