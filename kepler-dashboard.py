@@ -152,8 +152,9 @@ fig_1.update_layout(plot_bgcolor = 'black',
                     legend_orientation = 'h',
                     legend_y = -.25,
                     legend_itemclick = 'toggleothers')
-fig_1.update_xaxes(gridcolor = 'grey', griddash = 'dash', minor_griddash = 'dot')
-fig_1.update_yaxes(gridcolor = 'grey', griddash = 'dash', minor_griddash = 'dot')
+
+fig_1.update_xaxes(gridcolor = 'grey')
+fig_1.update_yaxes(gridcolor = 'grey')
 
 c1 = st.container()
 
