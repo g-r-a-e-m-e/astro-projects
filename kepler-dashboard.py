@@ -141,7 +141,6 @@ fig_1 = px.scatter(data_frame = df[df['disc_year'] <= year_in],
                    x = 'pl_bmasse', y = 'pl_rade',
                    color = 'spectral_class', color_discrete_map = color_dict,
                    size = 'pl_rade',
-                   log_x = True, log_y = True,
                    labels = {'pl_bmasse' : 'Planetary Mass (Earth Masses)',
                              'pl_rade' : 'Planetary Radius (Earth Radii)',
                              'spectral_class' : 'Host Star Spectral Class'},
@@ -156,8 +155,21 @@ fig_1.update_layout(plot_bgcolor = 'black',
 fig_1.update_xaxes(gridcolor = 'grey')
 fig_1.update_yaxes(gridcolor = 'grey')
 
+fig_2 = px.histogram(data_frame = df[df['disc_year'] <= year_in],
+                     x = 'pl_bmasse',
+                     labels = {'pl_bmasse' : 'Planetary Mass (Earth Masses)',
+                               'spectral_class' : 'Host Star Spectral Class'},
+                     category_orders = {'spectral_class' : ['A', 'F', 'G', 'K', 'M']})
+
+fig_2.update_layout(plot_bgcolor = 'black',
+                    legend_orientation = 'h',
+                    legend_y = -.25,
+                    legend_itemclick = 'toggleothers')
+
+# Create container 1
 c1 = st.container()
 
 with c1:
     st.write("Distribution of Planetary Radius vs. Planetary Mass")
     st.plotly_chart(fig_1, use_container_width = True)
+    st.plotly_chart(fig_2, use_container_width = True)
