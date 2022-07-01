@@ -127,7 +127,7 @@ st.title('Kepler Exoplanets')
 # Get the list of discovery years for the year_in slider
 discovery_years = df['disc_year'].sort_values().unique()
 
-year_in = st.sidebar.select_slider('Discovery Year', discovery_years, max(discovery_years))
+year_in = st.select_slider('Discovery Year', discovery_years, max(discovery_years))
 #spectral_class_in = st.sidebar.radio('Spectral Class', ['O', 'B', 'A', 'F', 'G', 'K', 'M', 'C'])
 
 # Display the number of exoplanets discovered since the user's slider selection
