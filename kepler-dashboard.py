@@ -22,17 +22,45 @@ import streamlit as st
 # NASA Exoplanet archive url
 base_url = "https://exoplanetarchive.ipac.caltech.edu/TAP/sync?query="
 
-# Table query
-table_query = "SELECT+*+FROM+ps+WHERE+discoverymethod+LIKE+'%Transit%'+AND+disc_facility+LIKE+'%Kepler%'+AND+soltype+LIKE+'%Confirmed%'+AND+pl_radestr+IS+NOT+NULL+"
+cols = ['pl_name', 'hostname', 'default_flag', 'sy_snum', 'sy_pnum', 
+'discoverymethod', 'disc_year', 'disc_facility', 'soltype', 
+'pl_controv_flag', 'pl_refname', 'pl_orbper', 'pl_orbpererr1', 
+'pl_orbpererr2', 'pl_orbperlim', 'pl_orbsmax', 'pl_orbsmaxerr1', 
+'pl_orbsmaxerr2', 'pl_orbsmaxlim', 'pl_rade', 'pl_radeerr1', 
+'pl_radeerr2', 'pl_radelim', 'pl_radj', 'pl_radjerr1', 'pl_radjerr2', 
+'pl_radjlim', 'pl_bmasse', 'pl_bmasseerr1', 'pl_bmasseerr2', 
+'pl_bmasselim', 'pl_bmassj', 'pl_bmassjerr1', 'pl_bmassjerr2', 
+'pl_bmassjlim', 'pl_bmassprov', 'pl_orbeccen', 'pl_orbeccenerr1', 
+'pl_orbeccenerr2', 'pl_orbeccenlim', 'pl_insol', 'pl_insolerr1', 
+'pl_insolerr2', 'pl_insollim', 'pl_eqt', 'pl_eqterr1', 'pl_eqterr2', 
+'pl_eqtlim', 'ttv_flag', 'st_refname', 'st_spectype', 'st_teff', 
+'st_tefferr1', 'st_tefferr2', 'st_tefflim', 'st_rad', 'st_raderr1', 
+'st_raderr2', 'st_radlim', 'st_mass', 'st_masserr1', 'st_masserr2', 
+'st_masslim', 'st_met', 'st_meterr1', 'st_meterr2', 'st_metlim', 
+'st_metratio', 'st_logg', 'st_loggerr1', 'st_loggerr2', 'st_logglim', 
+'sy_refname', 'rastr', 'ra', 'decstr', 'dec', 'sy_dist', 'sy_disterr1', 
+'sy_disterr2', 'sy_vmag', 'sy_vmagerr1', 'sy_vmagerr2', 'sy_kmag', 
+'sy_kmagerr1', 'sy_kmagerr2', 'sy_gaiamag', 'sy_gaiamagerr1', 
+'sy_gaiamagerr2', 'rowupdate', 'pl_pubdate', 'releasedate']
+
+col_string = ''
+
+for i in range(len(cols)):
+    if i < len(cols) - 1:
+        col_string += cols[i] + ','
+    else:
+        col_string += cols[i]
+    
+col_string
 
 # Specify output format
 out_format = "&format=csv"
 
-# Concatenate base_url, table_query, and out_format 
-import_url = base_url + table_query + out_format
+# Query
+query = f"{base_url}SELECT+{col_string}+FROM+ps+WHERE+discoverymethod+LIKE+'%Transit%'+AND+disc_facility+LIKE+'%Kepler%'+AND+soltype+LIKE+'%Confirmed%'+AND+pl_radestr+IS+NOT+NULL+{out_format}"
 
 # Read in the data to a pandas DataFrame
-df = pd.read_csv(import_url, low_memory = False)
+df = pd.read_csv(query, low_memory = False)
 
 # The following functions will create columns which will allow us to categorize 
 # the data in our dashboard. This will allow the user to "slice and dice" the
@@ -104,8 +132,9 @@ year_in = st.sidebar.select_slider('Discovery Year', discovery_years)
 fig_1 = px.scatter(data_frame = df.loc[df['disc_year'] <= year_in], 
                    x = 'pl_bmasse', y = 'pl_rade',
                    size = 'pl_rade',
-                   facet_row = 'spectral_class',
+                   facet_col = 'spectral_class', facet_col_wrap = 3,
                    log_x = True, log_y = True,
-                   height = 1200)
+                   height = 1200, width = 1200,
+                   category_orders = {1:'O', 2:'B', 3:'A', 4:'F', 5:'G', 6:'K', 7:'M' })
 
-st.plotly_chart(fig_1, height = 1200)
+st.plotly_chart(fig_1, height = 1200, width = 1200)
