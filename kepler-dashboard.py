@@ -131,7 +131,7 @@ year_in = st.select_slider('Discovery Year', discovery_years, max(discovery_year
 #spectral_class_in = st.sidebar.radio('Spectral Class', ['O', 'B', 'A', 'F', 'G', 'K', 'M', 'C'])
 
 # Display the number of exoplanets discovered since the user's slider selection
-st.metric(label = f'Exoplanets discovered between {min(discovery_years)} and {year_in}', 
+st.metric(label = f'Exoplanets discovered between {min(discovery_years)} and {year_in}:', 
           value = len(df[df['disc_year'] <= year_in]))
 
 # Create figure 1, scatterplot of planetary radius vs. planetary mass, in
