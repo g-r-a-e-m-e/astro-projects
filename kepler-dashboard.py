@@ -12,7 +12,7 @@ import astroquery
 import astropy
 import numpy as np
 import pandas as pd
-import plotly.express as px
+import altair as alt
 import streamlit as st
 
 # The following set the base URL to the NASA exoplanet archive, set the query to
@@ -57,7 +57,7 @@ col_string
 out_format = "&format=csv"
 
 # Query
-query = f"{base_url}SELECT+{col_string}+FROM+ps+WHERE+discoverymethod+LIKE+'%Transit%'+AND+disc_facility+LIKE+'%Kepler%'+AND+soltype+LIKE+'%Confirmed%'+AND+pl_radestr+IS+NOT+NULL+{out_format}"
+query = f"{base_url}SELECT+{col_string}+FROM+ps+WHERE+discoverymethod+LIKE+'%Transit%'+AND+disc_facility+LIKE+'%Kepler%'+AND+soltype+LIKE+'%Confirmed%'+AND+pl_radestr+IS+NOT+NULL+AND+st_teff+IS+NOT+NULL+{out_format}"
 
 # Read in the data to a pandas DataFrame
 df = pd.read_csv(query, low_memory = False)
@@ -132,17 +132,29 @@ st.sidebar.title('Kepler Exoplanets')
 # Get the list of discovery years for the year_in slider
 discovery_years = df['disc_year'].sort_values().unique()
 
-year_in = st.sidebar.select_slider('Discovery Year', discovery_years)
+year_in = st.sidebar.select_slider('Discovery Year', discovery_years, max(discovery_years))
 #spectral_class_in = st.sidebar.radio('Spectral Class', ['O', 'B', 'A', 'F', 'G', 'K', 'M', 'C'])
 
 # Create figure 1, scatterplot of planetary radius vs. planetary mass, in
 # Earth radii and Earth masses
-fig_1 = px.scatter(data_frame = df.loc[df['disc_year'] <= year_in], 
-                   x = 'pl_bmasse', y = 'pl_rade',
-                   size = 'pl_rade',
-                   facet_col = 'spectral_class', facet_col_wrap = 3,
-                   log_x = True, log_y = True,
-                   height = 1200, width = 1200,
-                   category_orders = {1:'O', 2:'B', 3:'A', 4:'F', 5:'G', 6:'K', 7:'M' })
+fig_1 = alt.Chart(df[df['disc_year'] <= year_in]).mark_point().encode(
+    x = alt.X('pl_bmasse', 
+              axis = alt.Axis(title = 'Planetary Mass [M$_\oplus$]'), 
+              scale = alt.Scale(type = 'log')),
+    y = alt.Y('pl_rade', 
+              axis = alt.Axis(title = 'Planetary Radius [R$_\oplus$]'), 
+              scale = alt.Scale(type = 'log')),
+    row = alt.Row('spectral_class', 
+                  title = 'Host Star Spectral Class',
+                  header = alt.Header(titleColor = 'white')),
+    color = alt.Color('spectral_class', 
+                      scale = alt.Scale(domain = list(color_dict.keys()), 
+                                        range = list(color_dict.values())),
+                      legend = alt.Legend(title = 'Host Star Spectral Class'))
+    )
 
-st.plotly_chart(fig_1, height = 1200, width = 1200)
+c1 = st.container()
+
+with c1:
+    st.write("Distribution of Planteary Radius vs. Planetary Mass")
+    st.altair_chart(fig_1, use_container_width = True)
