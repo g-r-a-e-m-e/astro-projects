@@ -99,7 +99,7 @@ def set_color(spectral_class):
     elif sc == 'B':
         clr = '#aabfff'
     elif sc == 'A':
-        clr = '#aabfff'
+        clr = '#cad8ff'
     elif sc == 'F':
         clr = '#f8f7ff'
     elif sc == 'G':
@@ -116,19 +116,27 @@ def set_color(spectral_class):
 # Get the spectral class
 df['spectral_class'] = df['st_teff'].apply(lambda x: get_spectral_type(x))
 
-# Map the color of the host star
-df['color_map'] = df['spectral_class'].apply(lambda x: set_color(x))
+# Get the unique spectral classes
+spectral_classes = df['spectral_class'].unique()
 
-discovery_years = df['disc_year'].sort_values().unique()
-
-spectral_class = df['spectral_class'].unique()
+# Set the color dictionary based on the color of the host star
+color_dict = {}
+for sc in spectral_classes:
+    color_dict.update({sc : set_color(sc)})
 
 # The following begins to build the streamlit application
 
+# Set the sidebar title
 st.sidebar.title('Kepler Exoplanets')
+
+# Get the list of discovery years for the year_in slider
+discovery_years = df['disc_year'].sort_values().unique()
+
 year_in = st.sidebar.select_slider('Discovery Year', discovery_years)
 #spectral_class_in = st.sidebar.radio('Spectral Class', ['O', 'B', 'A', 'F', 'G', 'K', 'M', 'C'])
 
+# Create figure 1, scatterplot of planetary radius vs. planetary mass, in
+# Earth radii and Earth masses
 fig_1 = px.scatter(data_frame = df.loc[df['disc_year'] <= year_in], 
                    x = 'pl_bmasse', y = 'pl_rade',
                    size = 'pl_rade',
