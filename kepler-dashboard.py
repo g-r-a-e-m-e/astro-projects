@@ -134,10 +134,10 @@ year_in = st.sidebar.select_slider('Discovery Year', discovery_years, max(discov
 # Earth radii and Earth masses
 fig_1 = alt.Chart(df[df['disc_year'] <= year_in]).mark_point().encode(
     x = alt.X('pl_bmasse', 
-              axis = alt.Axis(title = 'Planetary Mass [M$_\oplus$]'), 
+              axis = alt.Axis(title = 'Planetary Mass (Earth Masses)'), 
               scale = alt.Scale(type = 'log')),
     y = alt.Y('pl_rade', 
-              axis = alt.Axis(title = 'Planetary Radius [R$_\oplus$]'), 
+              axis = alt.Axis(title = 'Planetary Radius (Earth Radii)'), 
               scale = alt.Scale(type = 'log')),
     row = alt.Row('spectral_class', 
                   title = 'Host Star Spectral Class',
@@ -145,11 +145,13 @@ fig_1 = alt.Chart(df[df['disc_year'] <= year_in]).mark_point().encode(
     color = alt.Color('spectral_class', 
                       scale = alt.Scale(domain = list(color_dict.keys()), 
                                         range = list(color_dict.values())),
-                      legend = alt.Legend(title = 'Host Star Spectral Class'))
+                      legend = alt.Legend(title = 'Host Star Spectral Class')),
+    size = alt.Size('pl_rade',
+                    legend = alt.Legend(title = 'Planetary Radius'))
     )
 
 c1 = st.container()
 
 with c1:
-    st.write("Distribution of Planteary Radius vs. Planetary Mass")
+    st.write("Distribution of Planetary Radius vs. Planetary Mass")
     st.altair_chart(fig_1, use_container_width = True)
