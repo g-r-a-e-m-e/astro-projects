@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Kepler Exoplanet Dashboard
+Exoplanet Dashboard
 
 Created on Thu Jun 30 12:19:15 2022
 
@@ -8,6 +8,7 @@ Created on Thu Jun 30 12:19:15 2022
 """
 
 # Import necessary packages
+import numpy as np
 import pandas as pd
 import altair as alt
 import plotly.express as px
@@ -53,7 +54,7 @@ for i in range(len(cols)):
 out_format = "&format=csv"
 
 # Query
-query = f"{base_url}SELECT+{col_string}+FROM+ps+WHERE+discoverymethod+LIKE+'%Transit%'+AND+disc_facility+LIKE+'%Kepler%'+AND+soltype+LIKE+'%Confirmed%'+AND+pl_radestr+IS+NOT+NULL+AND+st_teff+IS+NOT+NULL+{out_format}"
+query = f"{base_url}SELECT+{col_string}+FROM+ps+WHERE+soltype+LIKE+'%Confirmed%'+AND+pl_bmasse+IS+NOT+NULL+AND+pl_rade+IS+NOT+NULL+AND+st_rad+IS+NOT+NULL+AND+st_mass+IS+NOT+NULL+AND+st_teff+IS+NOT+NULL+{out_format}"
 
 # Read in the data to a pandas DataFrame
 df = pd.read_csv(query, low_memory = False)
@@ -109,7 +110,28 @@ def set_color(spectral_class):
     
     return clr
 
-# Get the spectral class
+# Assign simple color based on spectral class.
+def set_simple_color(spectral_class):
+    if sc == 'O':
+        clr = 'blue'
+    elif sc == 'B':
+        clr = 'cyan'
+    elif sc == 'A':
+        clr = 'lightblue'
+    elif sc == 'F':
+        clr = 'white'
+    elif sc == 'G':
+        clr = 'yellow'
+    elif sc == 'K':
+        clr = 'orange'
+    elif sc == 'M':
+        clr = 'orangered'
+    else:
+        clr = 'darkred'
+    
+    return clr
+
+# Set the spectral class
 df['spectral_class'] = df['st_teff'].apply(lambda x: get_spectral_type(x))
 
 # Get the unique spectral classes
@@ -120,10 +142,15 @@ color_dict = {}
 for sc in spectral_classes:
     color_dict.update({sc : set_color(sc)})
 
+# Set the simple color dictionary based on the color of the host star
+simple_color_dict = {}
+for sc in spectral_classes:
+    simple_color_dict.update({sc : set_simple_color(sc)})
+
 # The following begins to build the streamlit application
 
 # Set the sidebar title
-st.title('Kepler Exoplanets')
+st.title('Exploring Exoplanets')
 
 # Get the list of discovery years for the year_in slider
 discovery_years = df['disc_year'].sort_values().unique()
@@ -132,17 +159,18 @@ year_in = st.select_slider('Discovery Year', discovery_years, max(discovery_year
 #spectral_class_in = st.sidebar.radio('Spectral Class', ['O', 'B', 'A', 'F', 'G', 'K', 'M', 'C'])
 
 # Display the number of exoplanets discovered since the user's slider selection
-st.metric(label = f'Exoplanets discovered between {min(discovery_years)} and {year_in}:', 
+st.metric(label = f'Exoplanets with measured planetary and stellar masses and radii discovered between {min(discovery_years)} and {year_in}:', 
           value = len(df[df['disc_year'] <= year_in]))
 
-# Create figure 1, scatterplot of planetary radius vs. planetary mass, in
-# Earth radii and Earth masses
+# Create figure 1, scatterplot of stellar radius vs. stellar mass, in
+# Sol radii and Sol masses
 fig_1 = px.scatter(data_frame = df[df['disc_year'] <= year_in],
-                   x = 'pl_bmasse', y = 'pl_rade',
-                   color = 'spectral_class', color_discrete_map = color_dict,
-                   size = 'pl_rade',
-                   labels = {'pl_bmasse' : 'Planetary Mass (Earth Masses)',
-                             'pl_rade' : 'Planetary Radius (Earth Radii)',
+                   x = 'st_mass', y = 'st_rad',
+                   log_x = True, log_y = True,
+                   color = 'spectral_class', color_discrete_map = simple_color_dict,
+                   size = 'st_rad',
+                   labels = {'st_mass' : 'Stellar Mass (Sol Masses)',
+                             'st_rad' : 'Stellar Radius (Sol Radii)',
                              'spectral_class' : 'Host Star Spectral Class'},
                    category_orders = {'spectral_class' : ['A', 'F', 'G', 'K', 'M']},
                    render_mode = 'auto')
@@ -155,21 +183,31 @@ fig_1.update_layout(plot_bgcolor = 'black',
 fig_1.update_xaxes(gridcolor = 'grey')
 fig_1.update_yaxes(gridcolor = 'grey')
 
-fig_2 = px.histogram(data_frame = df[df['disc_year'] <= year_in],
-                     x = 'pl_bmasse',
-                     labels = {'pl_bmasse' : 'Planetary Mass (Earth Masses)',
-                               'spectral_class' : 'Host Star Spectral Class'},
-                     category_orders = {'spectral_class' : ['A', 'F', 'G', 'K', 'M']})
+# Create figure 2, scatterplot of planetary radius vs. planetary mass, in
+# Eartg radii and Earth masses
+fig_2 = px.scatter(data_frame = df[df['disc_year'] <= year_in],
+                   x = 'pl_bmasse', y = 'pl_rade',
+                   log_x = True, log_y = True,
+                   color = 'spectral_class', color_discrete_map = simple_color_dict,
+                   size = 'pl_rade',
+                   labels = {'pl_bmasse' : 'Planetary Mass (Earth Masses)',
+                             'pl_rade' : 'Planetary Radius (Earth Radii)',
+                             'spectral_class' : 'Host Star Spectral Class'},
+                   category_orders = {'spectral_class' : ['A', 'F', 'G', 'K', 'M']},
+                   render_mode = 'auto')
 
 fig_2.update_layout(plot_bgcolor = 'black',
                     legend_orientation = 'h',
                     legend_y = -.25,
                     legend_itemclick = 'toggleothers')
 
+fig_2.update_xaxes(gridcolor = 'grey')
+fig_2.update_yaxes(gridcolor = 'grey')
+
 # Create container 1
 c1 = st.container()
 
 with c1:
-    st.write("Distribution of Planetary Radius vs. Planetary Mass")
+    st.write("Distributions of Stellar and Planetary Radii vs. Mass")
     st.plotly_chart(fig_1, use_container_width = True)
     st.plotly_chart(fig_2, use_container_width = True)
