@@ -177,7 +177,7 @@ c1 = st.container()
 
 with c1:
     # Display the number of exoplanets discovered since the user's slider selection
-    st.subheader(f'Number of exoplanets discovered between {year_in[0]} and {year_in[1]}:*')
+    st.subheader(f'Number of exoplanets discovered between {year_in[0]} and {year_in[1]}*:')
     st.caption('*with measured stellar and planetary masses and radii')
     st.metric(label = 'Count', value = len(filtered_df))
 
