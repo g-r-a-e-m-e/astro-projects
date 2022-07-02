@@ -156,13 +156,13 @@ st.title('Exploring Exoplanets')
 discovery_years = df['disc_year'].sort_values().unique()
 
 # Create year_in slider to allow user to select time period of discovery
-year_in = st.slider('Discovery Year', 
+year_in = st.sidebar.slider('Discovery Year', 
                     min_value = int(min(discovery_years)), 
                     max_value = int(max(discovery_years)),
                     value = [int(min(discovery_years)), int(max(discovery_years))])
 
 # Create facility multiselect to allow user to select the discovery facility
-facility_in = st.multiselect('Discovery Facility', 
+facility_in = st.sidebar.multiselect('Discovery Facility', 
                              options = df['disc_facility'].sort_values().unique())
 
 if (facility_in == []):
@@ -203,16 +203,14 @@ fig_1.update_xaxes(gridcolor = 'grey')
 fig_1.update_yaxes(gridcolor = 'grey')
 
 # Create figure 2, scatterplot of planetary radius vs. planetary mass, in
-# Eartg radii and Earth masses
+# Earth radii and Earth masses
 fig_2 = px.scatter(data_frame = filtered_df,
                    x = 'pl_bmasse', y = 'pl_rade',
                    log_x = True, log_y = True,
-                   color = 'spectral_class', color_discrete_map = simple_color_dict,
+                   color = 'pl_rade', color_continuous_scale = 'jet',
                    size = 'pl_rade',
                    labels = {'pl_bmasse' : 'Planetary Mass (Earth Masses)',
-                             'pl_rade' : 'Planetary Radius (Earth Radii)',
-                             'spectral_class' : 'Host Star Spectral Class'},
-                   category_orders = {'spectral_class' : ['A', 'F', 'G', 'K', 'M']},
+                             'pl_rade' : 'Planetary Radius (Earth Radii)'},
                    render_mode = 'auto')
 
 fig_2.update_layout(plot_bgcolor = 'black',
@@ -230,3 +228,45 @@ with c2:
     st.header("Stellar and Planetary Radii vs. Mass")
     st.plotly_chart(fig_1, use_container_width = True)
     st.plotly_chart(fig_2, use_container_width = True)
+    
+
+# Create figure 3, boxplot of stellar mass distributions
+fig_3 = px.box(data_frame = filtered_df,
+               x = 'spectral_class', y = 'st_mass',
+               log_y = True,
+               color = 'spectral_class', color_discrete_map = simple_color_dict,
+               labels = {'spectral_class': 'Spectral Class',
+                         'st_mass' : 'Stellar Mass (Sol Masses)'},
+               category_orders = {'spectral_class' : ['A', 'F', 'G', 'K', 'M']})
+
+fig_3.update_layout(plot_bgcolor = 'black',
+                    legend_orientation = 'h',
+                    legend_y = -.25,
+                    legend_itemclick = 'toggleothers')
+
+fig_3.update_xaxes(gridcolor = 'grey')
+fig_3.update_yaxes(gridcolor = 'grey')
+
+# Create figure 4, boxplot of planetary mass distributions
+fig_4 = px.box(data_frame = filtered_df,
+               x = 'spectral_class', y = 'pl_bmasse',
+               log_y = True,
+               color = 'spectral_class', color_discrete_map = simple_color_dict,
+               labels = {'spectral_class': 'Spectral Class of Host Star',
+                         'pl_bmasse' : 'Planetary Mass (Earth Masses)'},
+               category_orders = {'spectral_class' : ['A', 'F', 'G', 'K', 'M']})
+
+fig_4.update_layout(plot_bgcolor = 'black',
+                    legend_orientation = 'h',
+                    legend_y = -.25,
+                    legend_itemclick = 'toggleothers')
+
+fig_4.update_xaxes(gridcolor = 'grey')
+fig_4.update_yaxes(gridcolor = 'grey')
+
+# Create container 3
+c3 = st.container()
+with c3:
+    st.header("Stellar and Planetary Mass Distributions")
+    st.plotly_chart(fig_3, use_container_width = True)
+    st.plotly_chart(fig_4, use_container_width = True)
