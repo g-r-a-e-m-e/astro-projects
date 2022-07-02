@@ -158,9 +158,14 @@ discovery_years = df['disc_year'].sort_values().unique()
 year_in = st.select_slider('Discovery Year', discovery_years, max(discovery_years))
 #spectral_class_in = st.sidebar.radio('Spectral Class', ['O', 'B', 'A', 'F', 'G', 'K', 'M', 'C'])
 
-# Display the number of exoplanets discovered since the user's slider selection
-st.metric(label = f'Exoplanets with measured planetary and stellar masses and radii discovered between {min(discovery_years)} and {year_in}:', 
-          value = len(df[df['disc_year'] <= year_in]))
+# Create container 1
+c1 = st.container()
+
+with c1:
+    # Display the number of exoplanets discovered since the user's slider selection
+    st.subheader(f'Number of exoplanets discovered between {min(discovery_years)} and {year_in}:*')
+    st.caption('*with measured stellar and planetary masses and radii')
+    st.metric(label = 'Count', value = len(df[df['disc_year'] <= year_in]))
 
 # Create figure 1, scatterplot of stellar radius vs. stellar mass, in
 # Sol radii and Sol masses
@@ -204,10 +209,10 @@ fig_2.update_layout(plot_bgcolor = 'black',
 fig_2.update_xaxes(gridcolor = 'grey')
 fig_2.update_yaxes(gridcolor = 'grey')
 
-# Create container 1
-c1 = st.container()
+# Create container 2
+c2 = st.container()
 
-with c1:
-    st.write("Distributions of Stellar and Planetary Radii vs. Mass")
+with c2:
+    st.header("Stellar and Planetary Radii vs. Mass")
     st.plotly_chart(fig_1, use_container_width = True)
     st.plotly_chart(fig_2, use_container_width = True)
