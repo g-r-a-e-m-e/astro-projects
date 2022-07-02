@@ -156,17 +156,17 @@ st.title('Exploring Exoplanets')
 discovery_years = df['disc_year'].sort_values().unique()
 
 # Create year_in slider to allow user to select time period of discovery
-year_in = st.sidebar.slider(label = 'Discovery Year', 
+year_in = st.slider(label = 'Discovery Year', 
                     min_value = int(min(discovery_years)), 
                     max_value = int(max(discovery_years)),
                     value = [int(min(discovery_years)), int(max(discovery_years))])
 
 # Create discovery method multiselect to allow user to select the discovery method
-disc_method_in = st.sidebar.multiselect(label = 'Discovery Method',
+disc_method_in = st.multiselect(label = 'Discovery Method',
                                         options = df['discoverymethod'].sort_values().unique())
 
 # Create facility multiselect to allow user to select the discovery facility
-facility_in = st.sidebar.multiselect(label = 'Discovery Facility', 
+facility_in = st.multiselect(label = 'Discovery Facility', 
                              options = df['disc_facility'].sort_values().unique())
 
 if ((facility_in == []) & (disc_method_in == [])):
