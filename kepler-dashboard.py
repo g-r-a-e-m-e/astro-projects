@@ -155,10 +155,22 @@ st.title('Exploring Exoplanets')
 # Get the list of discovery years for the year_in slider
 discovery_years = df['disc_year'].sort_values().unique()
 
+# Create year_in slider to allow user to select time period of discovery
 year_in = st.slider('Discovery Year', 
                     min_value = int(min(discovery_years)), 
                     max_value = int(max(discovery_years)),
                     value = [int(min(discovery_years)), int(max(discovery_years))])
+
+# Create facility multiselect to allow user to select the discovery facility
+facility_in = st.multiselect('Discovery Facility', 
+                             options = df['disc_facility'].sort_values().unique())
+
+if (facility_in == []):
+    filtered_df =  df[(df['disc_year'] >= year_in[0]) & (df['disc_year'] <= year_in[1])]
+else:
+    filtered_df = df[(df['disc_year'] >= year_in[0]) & (df['disc_year'] <= year_in[1]) & (df['disc_facility'].isin(facility_in))]
+
+
 
 # Create container 1
 c1 = st.container()
@@ -167,11 +179,11 @@ with c1:
     # Display the number of exoplanets discovered since the user's slider selection
     st.subheader(f'Number of exoplanets discovered between {year_in[0]} and {year_in[1]}:*')
     st.caption('*with measured stellar and planetary masses and radii')
-    st.metric(label = 'Count', value = len(df[(df['disc_year'] >= year_in[0]) & (df['disc_year'] <= year_in[1])]))
+    st.metric(label = 'Count', value = len(filtered_df))
 
 # Create figure 1, scatterplot of stellar radius vs. stellar mass, in
 # Sol radii and Sol masses
-fig_1 = px.scatter(data_frame = df[(df['disc_year'] >= year_in[0]) & (df['disc_year'] <= year_in[1])],
+fig_1 = px.scatter(data_frame = filtered_df,
                    x = 'st_mass', y = 'st_rad',
                    log_x = True, log_y = True,
                    color = 'spectral_class', color_discrete_map = simple_color_dict,
@@ -192,7 +204,7 @@ fig_1.update_yaxes(gridcolor = 'grey')
 
 # Create figure 2, scatterplot of planetary radius vs. planetary mass, in
 # Eartg radii and Earth masses
-fig_2 = px.scatter(data_frame = df[(df['disc_year'] >= year_in[0]) & (df['disc_year'] <= year_in[1])],
+fig_2 = px.scatter(data_frame = filtered_df,
                    x = 'pl_bmasse', y = 'pl_rade',
                    log_x = True, log_y = True,
                    color = 'spectral_class', color_discrete_map = simple_color_dict,
