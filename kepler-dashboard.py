@@ -155,21 +155,23 @@ st.title('Exploring Exoplanets')
 # Get the list of discovery years for the year_in slider
 discovery_years = df['disc_year'].sort_values().unique()
 
-year_in = st.select_slider('Discovery Year', discovery_years, max(discovery_years))
-#spectral_class_in = st.sidebar.radio('Spectral Class', ['O', 'B', 'A', 'F', 'G', 'K', 'M', 'C'])
+year_in = st.slider('Discovery Year', 
+                    min_value = int(min(discovery_years)), 
+                    max_value = int(max(discovery_years)),
+                    value = [int(min(discovery_years)), int(max(discovery_years))])
 
 # Create container 1
 c1 = st.container()
 
 with c1:
     # Display the number of exoplanets discovered since the user's slider selection
-    st.subheader(f'Number of exoplanets discovered between {min(discovery_years)} and {year_in}:*')
+    st.subheader(f'Number of exoplanets discovered between {min(discovery_years)} and {year_in[1]}:*')
     st.caption('*with measured stellar and planetary masses and radii')
-    st.metric(label = 'Count', value = len(df[df['disc_year'] <= year_in]))
+    st.metric(label = 'Count', value = len(df[(df['disc_year'] >= year_in[0]) & (df['disc_year'] <= year_in[1])]))
 
 # Create figure 1, scatterplot of stellar radius vs. stellar mass, in
 # Sol radii and Sol masses
-fig_1 = px.scatter(data_frame = df[df['disc_year'] <= year_in],
+fig_1 = px.scatter(data_frame = df[(df['disc_year'] >= year_in[0]) & (df['disc_year'] <= year_in[1])],
                    x = 'st_mass', y = 'st_rad',
                    log_x = True, log_y = True,
                    color = 'spectral_class', color_discrete_map = simple_color_dict,
@@ -190,7 +192,7 @@ fig_1.update_yaxes(gridcolor = 'grey')
 
 # Create figure 2, scatterplot of planetary radius vs. planetary mass, in
 # Eartg radii and Earth masses
-fig_2 = px.scatter(data_frame = df[df['disc_year'] <= year_in],
+fig_2 = px.scatter(data_frame = df[(df['disc_year'] >= year_in[0]) & (df['disc_year'] <= year_in[1])],
                    x = 'pl_bmasse', y = 'pl_rade',
                    log_x = True, log_y = True,
                    color = 'spectral_class', color_discrete_map = simple_color_dict,
