@@ -213,10 +213,9 @@ fig_2 = px.scatter(data_frame = filtered_df,
                              'pl_rade' : 'Planetary Radius (Earth Radii)'},
                    render_mode = 'auto')
 
-fig_2.update_layout(plot_bgcolor = 'black',
-                    legend_orientation = 'h',
-                    legend_y = -.25,
-                    legend_itemclick = 'toggleothers')
+fig_2.update_coloraxes(colorbar_orientation = 'h')
+
+fig_2.update_layout(plot_bgcolor = 'black')
 
 fig_2.update_xaxes(gridcolor = 'grey')
 fig_2.update_yaxes(gridcolor = 'grey')
