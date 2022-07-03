@@ -298,7 +298,6 @@ fig_5.update_layout(scene = dict(xaxis = dict(backgroundcolor = 'black',
                                  zaxis = dict(backgroundcolor = 'black',
                                               gridcolor = 'grey'),
                                  aspectmode = 'cube'),
-                    height = 750,
                     legend_orientation = 'h',
                     legend_y = -.25,
                     legend_itemclick = 'toggleothers')
