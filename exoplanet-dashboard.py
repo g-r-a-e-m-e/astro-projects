@@ -320,5 +320,5 @@ fig_5.update_layout(scene = dict(xaxis = dict(backgroundcolor = 'black',
 c4 = st.container()
 
 with c4:
-    st.header('Distribution of Stellar Distance')
+    st.header('Stellar Coordinates')
     st.plotly_chart(fig_5, use_container_width = True)
