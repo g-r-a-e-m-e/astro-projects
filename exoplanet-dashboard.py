@@ -277,3 +277,35 @@ with c3:
     st.header("Stellar and Planetary Mass Distributions")
     st.plotly_chart(fig_3, use_container_width = True)
     st.plotly_chart(fig_4, use_container_width = True)
+    
+# Create figure 5, 3d scatterplot of stellar position
+fig_5 = px.scatter_3d(data_frame = filtered_df,
+                      x = 'ra', y = 'dec', z = 'sy_dist',
+                      log_z = True,
+                      size = 'st_rad',
+                      color = 'spectral_class', color_discrete_map = simple_color_dict,
+                      labels = {'ra' : 'Right Ascension',
+                                'dec' : 'Declination',
+                                'sy_dist' : 'Log Distance [pc]',
+                                'spectral_class' : 'Spectral Class',
+                                'st_rad' : 'Radius (Sol Radii)'},
+                      category_orders = {'spectral_class' : ['A', 'F', 'G', 'K', 'M']})
+
+fig_5.update_layout(scene = dict(xaxis = dict(backgroundcolor = 'black',
+                                              gridcolor = 'grey'),
+                                 yaxis = dict(backgroundcolor = 'black',
+                                              gridcolor = 'grey'),
+                                 zaxis = dict(backgroundcolor = 'black',
+                                              gridcolor = 'grey'),
+                                 aspectmode = 'cube'),
+                    height = 750,
+                    legend_orientation = 'h',
+                    legend_y = -.25,
+                    legend_itemclick = 'toggleothers')
+
+# Create container 4
+c4 = st.container()
+
+with c4:
+    st.header('Distribution of Stellar Distance')
+    st.plotly_chart(fig_5, use_container_width = True)
