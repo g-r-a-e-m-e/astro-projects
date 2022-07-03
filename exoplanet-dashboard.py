@@ -64,7 +64,7 @@ df = pd.read_csv(query, low_memory = False)
 # data in order to explore it.
 
 # Simple stellar classification function
-def get_spectral_type(temperature):
+def set_spectral_type(temperature):
     t = temperature
     
     if t >= 3.0e5:
@@ -131,8 +131,18 @@ def set_simple_color(spectral_class):
     
     return clr
 
+# Define function to convert polar coordinate to Cartesian coordinates for
+# plotting
+def polar_to_cartesian(ra, dec):
+    x_prime = ra * np.cos(dec)
+    y_prime = ra * np.sin(dec)
+    
+    return x_prime, y_prime
+
+
+
 # Set the spectral class
-df['spectral_class'] = df['st_teff'].apply(lambda x: get_spectral_type(x))
+df['spectral_class'] = df['st_teff'].apply(lambda x: set_spectral_type(x))
 
 # Get the unique spectral classes
 spectral_classes = df['spectral_class'].unique()
@@ -147,8 +157,10 @@ simple_color_dict = {}
 for sc in spectral_classes:
     simple_color_dict.update({sc : set_simple_color(sc)})
 
-# The following begins to build the streamlit application
+# Convert polar coordinates to Cartesian coordinates
+df['x_prime'], df['y_prime'] = polar_to_cartesian(df['ra'], df['dec'])
 
+# The following begins to build the streamlit application
 # Set the sidebar title
 st.title('Exploring Exoplanets')
 
@@ -277,15 +289,17 @@ with c3:
     st.header("Stellar and Planetary Mass Distributions")
     st.plotly_chart(fig_3, use_container_width = True)
     st.plotly_chart(fig_4, use_container_width = True)
+
+
     
 # Create figure 5, 3d scatterplot of stellar position
 fig_5 = px.scatter_3d(data_frame = filtered_df,
-                      x = 'ra', y = 'dec', z = 'sy_dist',
+                      x = 'x_prime', y = 'y_prime', z = 'sy_dist',
                       log_z = True,
                       size = 'st_rad',
                       color = 'spectral_class', color_discrete_map = simple_color_dict,
-                      labels = {'ra' : 'Right Ascension',
-                                'dec' : 'Declination',
+                      labels = {'x_prime' : 'αcos(δ)',
+                                'y_prime' : 'αsin(δ)',
                                 'sy_dist' : 'Log Distance [pc]',
                                 'spectral_class' : 'Spectral Class',
                                 'st_rad' : 'Radius (Sol Radii)'},
