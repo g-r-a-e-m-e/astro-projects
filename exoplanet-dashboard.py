@@ -298,8 +298,8 @@ fig_5.update_layout(scene = dict(xaxis = dict(backgroundcolor = 'black',
                                  zaxis = dict(backgroundcolor = 'black',
                                               gridcolor = 'grey'),
                                  aspectmode = 'cube'),
+                    autosize = True,
                     legend_orientation = 'h',
-                    legend_y = -.25,
                     legend_itemclick = 'toggleothers')
 
 # Create container 4
