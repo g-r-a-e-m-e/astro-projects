@@ -7,6 +7,7 @@ Created on Wed Dec 28 09:07:04 2022
 """
 
 from astropy.io import fits
+from astropy.visualization import simple_norm
 import numpy as np
 import os
 #import matplotlib as mpl
@@ -59,14 +60,19 @@ fits_shapes = list(set(shapes))
 
 # Define function to stack the .fits data and plot it using matplotlib
 def stack_fits(fits_data, shape, cmap):
+    #normalized_data = [normalize(f, axis = 1) for f in fits_data]
+    normalized_data = [f for f in fits_data]
     stack_data = []
-    for d in fits_data:
+    for d in normalized_data:
         if d.shape == shape:
             stack_data.append(d)
             
     final_image = np.sum(stack_data, axis = 0)
+    norm = simple_norm(final_image, 'log')
     plt.figure()
-    plt.imshow(final_image, cmap = cmap)
+    plt.imshow(final_image, 
+               cmap = cmap, 
+               norm = norm)
     plt.colorbar()
 
 # Stack the images associated with each shape and display them
