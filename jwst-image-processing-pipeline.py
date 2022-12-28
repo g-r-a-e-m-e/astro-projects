@@ -71,4 +71,4 @@ def stack_fits(fits_data, shape, cmap):
 
 # Stack the images associated with each shape and display them
 for s in fits_shapes:
-    stack_fits(fits_data, s, 'inferno')
+    stack_fits(fits_data, s, 'gray')
