@@ -59,22 +59,24 @@ shapes = [d.shape for d in fits_data]
 fits_shapes = list(set(shapes))     
 
 # Define function to stack the .fits data and plot it using matplotlib
-def stack_fits(fits_data, shape, cmap):
-    #normalized_data = [normalize(f, axis = 1) for f in fits_data]
-    normalized_data = [f for f in fits_data]
+def plot_fits(fits_data, shape, cmap, scaling_parameter):
+    data = [f for f in fits_data]
     stack_data = []
-    for d in normalized_data:
+    for d in data:
         if d.shape == shape:
             stack_data.append(d)
             
     final_image = np.sum(stack_data, axis = 0)
-    norm = simple_norm(final_image, 'log')
-    plt.figure()
-    plt.imshow(final_image, 
-               cmap = cmap, 
-               norm = norm)
+    norm = simple_norm(final_image, 
+                       stretch = 'log', 
+                       log_a = scaling_parameter)
+    plt.figure(figsize = (12, 8))
+    plt.imshow(final_image,
+               norm = norm,
+               cmap = cmap)
     plt.colorbar()
+    plt.title(f'Scaling Parameter: {scaling_parameter}\nColor Map: {cmap}')
 
 # Stack the images associated with each shape and display them
 for s in fits_shapes:
-    stack_fits(fits_data, s, 'gray')
+    plot_fits(fits_data, s, 'CMRmap', 1000)
