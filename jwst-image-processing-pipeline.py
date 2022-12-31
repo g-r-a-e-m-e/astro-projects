@@ -58,7 +58,7 @@ fits_data = [get_fits_data(f) for f in fits_files]
 shapes = [d.shape for d in fits_data]
 fits_shapes = list(set(shapes))     
 
-# Define function to stack the .fits data and plot it using matplotlib
+# Define function to plot the .fits data using matplotlib
 def plot_fits(fits_data, shape, cmap, scaling_parameter):
     data = [f for f in fits_data]
     stack_data = []
@@ -77,6 +77,31 @@ def plot_fits(fits_data, shape, cmap, scaling_parameter):
     plt.colorbar()
     plt.title(f'Scaling Parameter: {scaling_parameter}\nColor Map: {cmap}')
 
-# Stack the images associated with each shape and display them
+### Developing stacking function
+# Define function to stack the .fits data
+# def stack_fits(fits_data, cmap, scaling_parameter):
+#     data = fits_data
+#     array_shapes = [s.shape for s in fits_data]
+#     new_shape = max(array_shapes)
+    
+#     stack_data = []
+#     for d in data:
+#         nd = d.copy()
+#         nd.resize(new_shape)
+#         stack_data.append(nd)
+    
+#     final_image = np.sum(stack_data, axis = 0)
+#     norm = simple_norm(final_image, 
+#                         stretch = 'log', 
+#                         log_a = scaling_parameter)
+#     plt.figure(figsize = (12, 8))
+#     plt.imshow(final_image,
+#                norm = norm,
+#                cmap = cmap)
+#     plt.colorbar()
+#     plt.title(f'Scaling Parameter: {scaling_parameter}\nColor Map: {cmap}')  
+    
+# Plot the images associated with each array shape and display them
 for s in fits_shapes:
     plot_fits(fits_data, s, 'CMRmap', 1000)
+
