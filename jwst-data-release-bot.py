@@ -11,8 +11,6 @@ Created on Sun Jan  1 08:03:24 2023
 import arrow
 from astroquery.mast import Observations
 from astropy.time import Time
-import numpy as np
-import os
 
 # Get today's date/time (UTC)
 utc = arrow.utcnow().format('YYYY-MM-DD HH:mm')
@@ -24,8 +22,13 @@ obs_table = Observations.query_criteria(obs_collection = 'JWST',
 
 # Impute ISO Date column for accessibility
 obs_table['t_obs_release_iso'] = Time(obs_table['t_obs_release'], format = 'mjd').to_value('iso', subfmt = 'date_hm')
-# target_release_dates_mjd = [d for d in obs_table['t_obs_release']]
-# target_release_dates_iso = [Time(d, format = 'mjd').to_value('iso', subfmt = 'date_hm') for d in target_release_dates_mjd]
 
+# Filter observation table for data releases on or after today
+obs_table_filtered = obs_table[obs_table['t_obs_release_iso'] >= utc]
 
+# Set next_release_date_iso variable
+next_release_date_iso = min(obs_table_filtered['t_obs_release_iso'])
 
+# Define countdown function to count down the time until the next data release
+#def countdown(start, end):
+    
