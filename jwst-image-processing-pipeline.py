@@ -69,13 +69,16 @@ def plot_fits(fits_data, shape, cmap, scaling_parameter):
     final_image = np.sum(stack_data, axis = 0)
     norm = simple_norm(final_image, 
                        stretch = 'log', 
-                       log_a = scaling_parameter)
+                       log_a = scaling_parameter,
+                       min_cut = 0)
     plt.figure(figsize = (12, 8))
     plt.imshow(final_image,
                norm = norm,
-               cmap = cmap)
-    plt.colorbar()
-    plt.title(f'Scaling Parameter: {scaling_parameter}\nColor Map: {cmap}')
+               cmap = cmap,
+               origin = 'lower')
+    plt.axis('off')
+    #plt.colorbar()
+    #plt.title(f'Scaling Parameter: {scaling_parameter}\nColor Map: {cmap}')
     plt.show()
 
 ### Developing stacking function
@@ -104,5 +107,4 @@ def plot_fits(fits_data, shape, cmap, scaling_parameter):
     
 # Plot the images associated with each array shape and display them
 for s in fits_shapes:
-    plot_fits(fits_data, s, 'gray', 1000)
-
+    plot_fits(fits_data, s, 'CMRmap', 1000)
