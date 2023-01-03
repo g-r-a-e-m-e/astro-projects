@@ -14,3 +14,6 @@ Some of the files here work, some don't. Some are updated more frequently than o
  
 ## jwst-image-processing-pipeline.py
 - This is a python script that performs simple image processing of James Webb Space Telescope .fits images downloaded with jwst-nircam-fits-downloader.py, or .fits files otherwise stored on a user's machine.
+
+## jwst-data-release-app.py
+- This is a streamlit app that presents the nearest image data release from the James Webb Space Telescope.
