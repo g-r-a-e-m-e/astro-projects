@@ -18,8 +18,8 @@ import streamlit as st
 utc = arrow.utcnow().format('YYYY-MM-DD HH:mm')
 
 # Create observation table
-obs_table = Observations.query_criteria(obs_collection = 'JWST',
-                                        dataproduct_type = ['image'],
+obs_table = Observations.query_criteria(obs_collection = 'JWST', \
+                                        dataproduct_type = ['image'], \
                                         calib_level = [2,3,4])
 
 # Impute ISO Date column for accessibility
