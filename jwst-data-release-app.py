@@ -20,7 +20,8 @@ utc = arrow.utcnow().format('YYYY-MM-DD HH:mm')
 # Create observation table
 obs_table = Observations.query_criteria(obs_collection = 'JWST', \
                                         dataproduct_type = ['image'], \
-                                        calib_level = [2,3,4])
+                                        calib_level = [2,3,4],
+                                        dataRights = ['exclusive_access', 'restricted'])
 
 # Impute ISO Date column for accessibility
 obs_table['t_obs_release_iso'] = Time(obs_table['t_obs_release'], format = 'mjd').to_value('iso', subfmt = 'date_hm')
