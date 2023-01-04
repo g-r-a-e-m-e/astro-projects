@@ -7,7 +7,7 @@ Some of the files here work, some don't. Some are updated more frequently than o
 ---
 
 ## exoplanet-dashboard.py
-- This is an exoplanet data explorer that runs on Streamlit using data from [NASA's Exoplanet database](https://exoplanetarchive.ipac.caltech.edu/).
+- This is an [exoplanet data explorer](https://exoplanets.streamlit.app/) that runs on Streamlit using data from [NASA's Exoplanet database](https://exoplanetarchive.ipac.caltech.edu/).
  
 ## jwst-nircam-fits-downloader.py
 - This is a python script that empowers the user to download James Webb Space Telescope NIRCam .fits files from the [Mikulski Archive for Space Telescopes](https://archive.stsci.edu/) associated with a chosen target.
