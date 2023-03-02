@@ -107,4 +107,4 @@ def plot_fits(fits_data, shape, cmap, scaling_parameter):
     
 # Plot the images associated with each array shape and display them
 for s in fits_shapes:
-    plot_fits(fits_data, s, 'CMRmap', 1000)
+    plot_fits(fits_data, s, 'CMRmap', 10000)
